@@ -23,12 +23,14 @@ class PricesController extends Controller
     {
         $product = Product::findOrFail($product_id);
         session(['product_id' => $product_id]);
-        session(['product_price' => $product->price]);
+        
+        // у Product нет свойства price, равно как и нет такой связи =(
+        session(['product_price' => $product->price]); 
 
         $start_date = (!empty($request->start_date))? $request->start_date : date('Y',strtotime('-1 year')).'-01-01';
         $end_date = (!empty($request->end_date))? $request->end_date : date('Y').'-12-31';
 
-
+        // Такое в контроллере прям так себе. Для этого хорошо использовать scope.
         $prices = Price::where('product_id','=', $product_id)
                         ->where(function ($query) use ($start_date, $end_date) {
                             $query->where('start_date','>=',$start_date)
